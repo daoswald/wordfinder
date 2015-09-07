@@ -1,0 +1,41 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use FindBin;
+
+# Within the repo, it's bin/../lib. Elsewhere could be bin/lib.
+use lib "$FindBin::Bin/lib";        # bin/lib/
+use lib "$FindBin::Bin/../lib";     # bin/../lib/
+
+use File::Slurp;
+use IO::Prompt::Tiny 'prompt';
+use List::MoreUtils  'uniq';
+
+use Word;
+use WordList;
+
+my $wl = WordList->new( words =>
+  [
+    map {
+      $_ = lc $_;
+      Word->new( word => $_ );
+    }
+    grep { /^[a-z]{3,}$/i } uniq (
+        read_file('/usr/share/dict/words', chomp => 1 ),
+        map {(m/^([a-zA-Z]{3,})\b/ && 1) || ()}
+            read_file("$FindBin::Bin/../lib/dict/2of12inf.txt", chomp => 1)
+    )
+  ]
+);
+
+while( 1 ) {
+  my $letters = prompt 'Enter a set of letters (empty to exit)', '';
+  last unless length $letters;
+  my @words = sort {length $a <=> length $b || $a cmp $b} uniq @{$wl->words_spelled($letters)};
+  while(@words) {
+    my ($left, $right) = (shift(@words), shift(@words));
+    printf "%10s\t%10s\n", defined $left ? $left : '', defined $right ? $right : '';
+  }
+}
