@@ -74,7 +74,7 @@ my $wl = WordList->new( words =>
       $_ = lc $_;
       Word->new( word => $_ );
     }
-    grep { /^[a-z]{4,}$/i }
+    grep { /^[a-z]{3,}$/i }
     read_file('/usr/share/dict/words', chomp => 1 )
   ]
 );
@@ -83,7 +83,9 @@ my $wl = WordList->new( words =>
 while( 1 ) {
   my $letters = prompt 'Enter a set of letters (empty to exit)', '';
   last unless length $letters;
-  print "$_\n" for
-    sort { length $a <=> length $b || $a cmp $b }
-    uniq @{$wl->words_spelled($letters)};
+  my @words = sort {length $a <=> length $b || $a cmp $b} uniq @{$wl->words_spelled($letters)};
+  while(@words) {
+    my ($left, $right) = (shift(@words), shift(@words));
+    printf "%10s\t%10s\n", defined $left ? $left : '', defined $right ? $right : '';
+  }
 }
