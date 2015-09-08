@@ -17,8 +17,9 @@ use Word;
 use WordList;
 
 my @dictionary = (
-    '/usr/share/dict/words',
-    "$FindBin::Bin/../lib/dict/2of12inf.txt",
+#    '/usr/share/dict/words',
+#    "$FindBin::Bin/../lib/dict/2of12inf.txt",
+    "$FindBin::Bin/../lib/dict/enable1.txt"
 );
 
 my @wl = map {
