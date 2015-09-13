@@ -16,28 +16,23 @@ use List::MoreUtils  'uniq';
 use Word;
 use WordList;
 
-my @dictionary = (
+my @dicts = (
 #    '/usr/share/dict/words',
 #    "$FindBin::Bin/../lib/dict/2of12inf.txt",
     "$FindBin::Bin/../lib/dict/enable1.txt"
 );
 
-my @wl = map {
-    WordList->new(words => [
-        map {(m/^([a-z]{3,})\b/i && Word->new(word => lc $1)) || ()}
-        read_file($_, chomp => 1)
-    ])
-} @dictionary;
+my @wl = WordList->new(words => [
+    uniq
+    map {(m/^([a-z]{3,})\b/i && Word->new(word => lc $1)) || ()}
+    map {read_file $_, chomp => 1} @dicts
+]);
 
 while (1) {
     my $letters = prompt 'Enter a set of letters (empty to exit)', '';
     last unless length $letters;
     my @words = sort {length $a <=> length $b || $a cmp $b}
-                uniq map {@{$_->words_spelled($letters)}} @wl;
-    while (@words) {
-        my ($left, $right) = (shift(@words), shift(@words));
-        printf "%10s\t%10s\n",
-            defined $left  ? $left  : '',
-            defined $right ? $right : '';
-    }
+                map  {@{$_->words_spelled($letters)}} @wl;
+    printf "%-10s\t%-10s\t%-10s\t%-10s\n", map {shift @words || ''} 1 .. 4
+        while @words;
 }

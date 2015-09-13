@@ -6,15 +6,7 @@ use namespace::autoclean;
 
 has words => (is => 'ro', isa => 'ArrayRef[Word]');
 
-sub words_spelled {
-  my ($self, $try) = @_;
-  my @found;
-  foreach my $dict_word (@{$self->words}) {
-    push @found, $dict_word->word
-        if $dict_word->can_be_spelled_from($try);
-  }
-  return \@found;
-}
+sub words_spelled {return [map {$_->can_be_spelled_from($_[1]) ? $_->word : ()} @{$_[0]->words}];}
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
