@@ -4,7 +4,8 @@ use warnings;
 use Moose;
 use namespace::autoclean;
 
-has words => (is => 'ro', isa => 'ArrayRef[Word]');
+# has words => (is => 'ro', isa => 'ArrayRef[Word]'); # isa check is slow.
+has words => (is => 'ro');
 
 sub words_spelled {return [map {$_->can_be_spelled_from($_[1]) ? $_->word : ()} @{$_[0]->words}];}
 

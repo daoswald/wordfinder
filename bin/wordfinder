@@ -12,7 +12,7 @@ use lib "$FindBin::Bin/../lib";     # bin/../lib/
 use File::Slurp;
 use IO::Prompt::Tiny 'prompt';
 use List::MoreUtils  'uniq';
-use MCE::Map; # Sereal => 1;
+use MCE::Map Sereal => 1;
 use Word;
 use WordList;
 
