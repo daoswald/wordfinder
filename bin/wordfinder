@@ -12,6 +12,7 @@ use lib "$FindBin::Bin/../lib";     # bin/../lib/
 use File::Slurp;
 use IO::Prompt::Tiny 'prompt';
 use List::MoreUtils  'uniq';
+use MCE::Map;
 
 use Word;
 use WordList;
@@ -23,9 +24,11 @@ my @dicts = (
 );
 
 my @wl = WordList->new(words => [
-    uniq
-    map {(m/^([a-z]{3,})\b/i && Word->new(word => lc $1)) || ()}
-    map {read_file $_, chomp => 1} @dicts
+    uniq map {
+        mce_map_f {
+            (lc($_) =~ m/^([a-z]{3,})\b/ && Word->new(word => $1)) || ()
+        } $_
+    } @dicts
 ]);
 
 while (1) {
