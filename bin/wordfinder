@@ -12,8 +12,7 @@ use lib "$FindBin::Bin/../lib";     # bin/../lib/
 use File::Slurp;
 use IO::Prompt::Tiny 'prompt';
 use List::MoreUtils  'uniq';
-use MCE::Map;
-
+use MCE::Map; # Sereal => 1;
 use Word;
 use WordList;
 
@@ -36,6 +35,6 @@ while (1) {
     last unless length $letters;
     my @words = sort {length $a <=> length $b || $a cmp $b}
                 map  {@{$_->words_spelled($letters)}} @wl;
-    printf "%-10s\t%-10s\t%-10s\t%-10s\n", map {shift @words || ''} 1 .. 4
+    printf "%-24s\t%-24s\t%-24s\t%-24s\n", map {shift @words || ''} 1 .. 4
         while @words;
 }
