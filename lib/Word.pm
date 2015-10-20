@@ -6,14 +6,13 @@ use warnings;
 use List::Util q/none/;
 use namespace::autoclean;
 
-# has word     => (is   => 'ro', isa     => 'Str'); # Isa checks are slow.
-#
-# has _buckets => (is   => 'ro', isa     => 'HashRef',
-#                  lazy => 1,    builder => '_build_buckets');
 has word     => (is => 'ro');
 has _buckets => (is => 'ro', lazy => 1, builder => '_build_buckets');
 
-sub _build_buckets {_bucketize(shift->word)}
+sub _build_buckets {
+    my $self = shift;
+    return $self->_bucketize($self->word);
+}
 
 sub _bucketize {
     my %thash;
